@@ -35,14 +35,18 @@ are looking for are not tied up to the amount of code, but rather to the quality
 ```
 ## Features
 ### Implement a chat application that supports the following features:
-Back-End Features 
+#### Back-End Features 
+···
 ● As a consumer of the API, I can persist my chat messages
 ● As a consumer of the API, I can persist messages in specific channels I join.
 ● As a consumer of the API, I can see the list of all the available channels
 ● As a consumer of the API, I can receive gif suggestions
 ● As a consumer of the API, I can look up other users and channels
 ● As a consumer of the API, I can see chat statistics of users and channels
-Front-End Features ● As a User of the web-app, I can see a list of all the channels
+···
+#### Front-End Features 
+···
+● As a User of the web-app, I can see a list of all the channels
 ● As a User of the web-app, I can join a channel and see the history of it
 ● As a User of the web-app, I can send messages to a channel after I have joined it
 ● As a User of the web-app, I can edit my previous messages
@@ -50,3 +54,4 @@ Front-End Features ● As a User of the web-app, I can see a list of all the cha
 ● As a User of the web-app, I can search for my previous messages
 ● As an AI Bot on the web-app, I can interact with received messages in a channel and reply to
 them
+···
