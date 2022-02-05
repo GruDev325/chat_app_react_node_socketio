@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router, Route } from 'react-router-dom';
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/styles';
 import { SnackbarProvider } from 'notistack';
@@ -10,7 +10,7 @@ import PrivateRoute from './Utilities/private-route';
 import Home from './Home/Home';
 import Chat from './Chat/Chat';
 
-const theme = createMuiTheme({
+const theme = createTheme({
     palette: {
         primary: {
             light: '#58a5f0',
