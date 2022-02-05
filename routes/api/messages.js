@@ -52,3 +52,27 @@ router.get("/global", (req, res) => {
       }
     });
 });
+
+// Post global message
+router.post("/global", (req, res) => {
+  let message = new GlobalMessage({
+    from: jwtUser.id,
+    body: req.body.body,
+  });
+
+  if (String(req.body.body).length == 0) return;
+
+  req.io.sockets.emit("messages", req.body.body);
+
+  message.save((err) => {
+    if (err) {
+      console.log(err);
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({ message: "Failure" }));
+      res.sendStatus(500);
+    } else {
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({ message: "Success" }));
+    }
+  });
+});
