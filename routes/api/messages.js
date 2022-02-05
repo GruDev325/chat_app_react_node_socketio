@@ -76,3 +76,35 @@ router.post("/global", (req, res) => {
     }
   });
 });
+
+
+// Get conversations list
+router.get('/conversations', (req, res) => {
+    let from = mongoose.Types.ObjectId(jwtUser.id);
+    Conversation.aggregate([
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'recipients',
+                foreignField: '_id',
+                as: 'recipientObj',
+            },
+        },
+    ])
+        .match({ recipients: { $all: [{ $elemMatch: { $eq: from } }] } })
+        .project({
+            'recipientObj.password': 0,
+            'recipientObj.__v': 0,
+            'recipientObj.date': 0,
+        })
+        .exec((err, conversations) => {
+            if (err) {
+                console.log(err);
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify({ message: 'Failure' }));
+                res.sendStatus(500);
+            } else {
+                res.send(conversations);
+            }
+        });
+});
