@@ -53,11 +53,12 @@ const useStyles = makeStyles((theme) => ({
     messageBubble: {
         padding: 10,
         border: "1px solid white",
-        backgroundColor: "white",
+        backgroundColor: "rgb(195 239 180)",
         borderRadius: "0 10px 10px 10px",
         boxShadow: "-3px 4px 4px 0px rgba(0,0,0,0.08)",
         marginTop: 8,
         maxWidth: "40em",
+        wordWrap: "break-word"
     },
     messageBubbleRight: {
         borderRadius: "10px 0 10px 10px",
