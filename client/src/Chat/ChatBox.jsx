@@ -5,6 +5,8 @@ import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import IconButton from "@material-ui/core/IconButton";
 import SendIcon from "@material-ui/icons/Send";
+import Cancel from "@material-ui/icons/Cancel";
+import DragIndicator from "@material-ui/icons/DragIndicator";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -19,8 +21,13 @@ import {
     useSendGlobalMessage,
     useGetConversationMessages,
     useSendConversationMessage,
+    useRemoveConversationMessage,
+    useRemoveGlobalMessage,
+    useUpdateGlobalMessage,
+    useUpdateConversationMessage,
 } from "../Services/chatService";
 import { authenticationService } from "../Services/authenticationService";
+import { Menu, MenuItem } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -80,6 +87,9 @@ const useStyles = makeStyles((theme) => ({
     listItemRight: {
         flexDirection: "row-reverse",
     },
+    messageMenu: {
+        marginTop: "3px"
+    },
 }));
 
 const ChatBox = (props) => {
@@ -89,23 +99,41 @@ const ChatBox = (props) => {
     const [newMessage, setNewMessage] = useState("");
     const [messages, setMessages] = useState([]);
     const [lastMessage, setLastMessage] = useState(null);
+    const [removedMessageId, setRemovedMessageId] = useState(null);
+    const [selectedMessageId, setSelectedMessageId] = useState(null);
+    const [selectedMessageBody, setSelectedMessageBody] = useState(null);
 
     const getGlobalMessages = useGetGlobalMessages();
     const sendGlobalMessage = useSendGlobalMessage();
+    const updateGlobalMessage = useUpdateGlobalMessage();
+    const removeGlobalMessage = useRemoveGlobalMessage();
     const getConversationMessages = useGetConversationMessages();
     const sendConversationMessage = useSendConversationMessage();
+    const updateConversationMessage = useUpdateConversationMessage();
+    const removeConversationMessage = useRemoveConversationMessage();
 
     let chatBottom = useRef(null);
     const classes = useStyles();
 
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event, messageId) => {
+        setAnchorEl(event.currentTarget);
+        setSelectedMessageId(messageId);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
     useEffect(() => {
         reloadMessages();
         scrollToBottom();
-    }, [lastMessage, props.scope, props.conversationId]);
+    }, [lastMessage, removedMessageId, props.scope, props.conversationId]);
 
     useEffect(() => {
         const socket = socketIOClient(process.env.REACT_APP_API_URL);
         socket.on("messages", (data) => setLastMessage(data));
+        socket.on("removeMessage", (data) => setRemovedMessageId(data));
     }, []);
 
     const reloadMessages = () => {
@@ -128,16 +156,59 @@ const ChatBox = (props) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (props.scope === "Global Chat") {
-            sendGlobalMessage(newMessage).then(() => {
-                setNewMessage("");
-            });
+        if (selectedMessageBody) {
+            if (props.scope === "Global Chat") {
+                updateGlobalMessage(selectedMessageId, newMessage).then(() => {
+                    setNewMessage("");
+                    setSelectedMessageBody(null);
+                    setSelectedMessageId("");
+                });
+            } else {
+                updateConversationMessage(props.user._id, selectedMessageId, newMessage).then((res) => {
+                    setNewMessage("");
+                    setSelectedMessageBody(null);
+                    setSelectedMessageId("");
+                });
+            }
         } else {
-            sendConversationMessage(props.user._id, newMessage).then((res) => {
-                setNewMessage("");
-            });
+            if (props.scope === "Global Chat") {
+                sendGlobalMessage(newMessage).then(() => {
+                    setNewMessage("");
+                });
+            } else {
+                sendConversationMessage(props.user._id, newMessage).then((res) => {
+                    setNewMessage("");
+                });
+            }
         }
     };
+
+
+    const handleEditMessage = () => {
+        setSelectedMessageBody(messages.filter((message) => message._id == selectedMessageId)[0].body);
+        setNewMessage(messages.filter((message) => message._id == selectedMessageId)[0].body);
+    };
+
+
+
+    const handleRemoveMessage = () => {
+        if (props.scope === "Global Chat") {
+            removeGlobalMessage(selectedMessageId).then((res) => {
+                console.log(res)
+            });
+        } else {
+            removeConversationMessage(selectedMessageId).then((res) => {
+                console.log(res)
+            });
+        }
+        setSelectedMessageId(null);
+    };
+
+
+
+    const handleReplyMessage = () => {
+    };
+
 
     return (
         <Grid container className={classes.root}>
@@ -167,6 +238,21 @@ const ChatBox = (props) => {
                                                 {commonUtilites.getInitialsFromName(m.fromObj[0].name)}
                                             </Avatar>
                                         </ListItemAvatar>
+                                        {m.fromObj[0]._id === currentUserId ?
+                                            <IconButton
+                                                className={classes.messageMenu}
+                                                onClick={(e) => {
+                                                    handleClick(e, m._id)
+                                                }}
+                                                size="small"
+                                                sx={{ ml: 2 }}
+                                                aria-controls={open ? 'account-menu' : undefined}
+                                                aria-haspopup="true"
+                                                aria-expanded={open ? 'true' : undefined}
+                                            >
+                                                <DragIndicator />
+                                            </IconButton> : <></>
+                                        }
                                         <ListItemText
                                             classes={{
                                                 root: classnames(classes.messageBubble, {
@@ -182,6 +268,45 @@ const ChatBox = (props) => {
                             </List>
                         )}
                         <div ref={chatBottom} />
+                        <Menu
+                            anchorEl={anchorEl}
+                            id="account-menu"
+                            open={open}
+                            onClose={handleClose}
+                            onClick={handleClose}
+                            PaperProps={{
+                                elevation: 0,
+                                sx: {
+                                    overflow: 'visible',
+                                    filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                                    mt: 1.5,
+                                    '& .MuiAvatar-root': {
+                                        width: 32,
+                                        height: 32,
+                                        ml: -0.5,
+                                        mr: 1,
+                                    },
+                                    '&:before': {
+                                        content: '""',
+                                        display: 'block',
+                                        position: 'absolute',
+                                        top: 0,
+                                        right: 14,
+                                        width: 10,
+                                        height: 10,
+                                        bgcolor: 'background.paper',
+                                        transform: 'translateY(-50%) rotate(45deg)',
+                                        zIndex: 0,
+                                    },
+                                },
+                            }}
+                            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                        >
+                            <MenuItem onClick={handleEditMessage}>Edit</MenuItem>
+                            <MenuItem onClick={handleRemoveMessage}>Delete</MenuItem>
+                            <MenuItem onClick={handleClose}>Reply</MenuItem>
+                        </Menu>
                     </Grid>
                     <Grid item xs={12} className={classes.inputRow}>
                         <form onSubmit={handleSubmit} className={classes.form}>
@@ -202,9 +327,15 @@ const ChatBox = (props) => {
                                     />
                                 </Grid>
                                 <Grid item xs={1}>
-                                    <IconButton type="submit">
-                                        <SendIcon />
-                                    </IconButton>
+                                    {
+                                        selectedMessageBody ?
+                                            <IconButton onClick={(e) => { setSelectedMessageBody(null); setNewMessage("") }}>
+                                                <Cancel />
+                                            </IconButton> :
+                                            <IconButton type="submit">
+                                                <SendIcon />
+                                            </IconButton>
+                                    }
                                 </Grid>
                             </Grid>
                         </form>

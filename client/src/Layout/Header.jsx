@@ -8,6 +8,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Link from '@material-ui/core/Link';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import Search from '@material-ui/icons/Search';
+import { Input } from '@material-ui/core';
 
 import { authenticationService } from '../Services/authenticationService';
 import history from '../Utilities/history';
@@ -66,6 +68,8 @@ const Header = () => {
                     <Link href="/" className={classes.title}>
                         <img src={logo} alt="Logo" />
                     </Link>
+                    <Search />
+                    <Input />
                     <Button
                         aria-owns={anchorEl ? 'simple-menu' : undefined}
                         aria-haspopup="true"
