@@ -1,55 +1,21 @@
-# 🎯 Take-Home Assignment
-The focus will be on code that is well-tested, readable, and maintainable. We will interact through
-pull requests and possibly have a call to discuss the decisions you made as well as work on minor
-improvements. 
-### 🧰The purpose of this assignment is:
-1. To give you the freedom to code in your most natural environment since we believe in-person
-sessions or whiteboard coding don’t always reflect our coding skills
-2. To see the kind of code you would produce if you were to work with us
-3. To create flexibility in scheduling interviews because you may choose to do this assignment
-in the nights or over the weekends.
-## 🔥Restrictions
-Please choose from the options below, based on the role you’re interviewing for:
-### 1. 🙋Front-End:
-The only requirement is that you use "React" in your tech stack. The rest is up to you to decide. If
-you are a Front-end developer only, you can complete only the front-end features
-### 2. 🙋Back-End:
-The only requirement is that you use "NodeJS" in your tech stack. The rest is up to you to decide.
-You can complete only the back-end features if you are a Backend developer. 
-### 3. 🙋Full-Stack:
-Must meet BOTH of the criteria from Front-end and Back-end sections. You must complete at least
-one of each front-end and back-end features.
-## 🗄️Assignment Details
-Pick and implement as many of the features from below, while keeping in mind the objective is to
-create well tested, readable, and maintainable code. By no means do we expect you to complete all
-a ton of the features listed below, so pick the ones that interest you the most.
-Try to focus more on fully developed features rather than the number of features. The principles we
-are looking for are not tied up to the amount of code, but rather to the quality of it.
+## Description
 
-## 🛠️Deliverables:
-```1. A link to a git repo with the working code in it
-2. Instructions on how to run the code so we can check it out ourselves
-3. Few words on which features were selected and why?
-4. Possible next steps if you had more time. What assumptions did you make?
+This is full-stack chat app that is built with MERN stack and Material UI. Socket.IO is used for the real-time message broadcasting.
+
+### Features
+-Real-time updates to the user lists, chat list, messages
+-Gloabal chat for all users
+-Direct messaging between users
+-Persist chat history in both global and DM channel.
+-Delete & Edit chat
+-User authentication features using JWT tokens.
+
+### Usage
+
 ```
-## 💻Features
-### Implement a chat application that supports the following features:
-#### ⚡Back-End Features 
-- [1] As a consumer of the API, I can persist my chat messages
-- [2] As a consumer of the API, I can persist messages in specific channels I join.
-- [3] As a consumer of the API, I can see the list of all the available channels
-- [4] As a consumer of the API, I can receive gif suggestions
-- [5] As a consumer of the API, I can look up other users and channels
-- [6] As a consumer of the API, I can see chat statistics of users and channels
+1. Clone the repo
+2. Move into the root directory of the project and execute `npm install` for the installation of server side dependencies and then run `npm run client-install` for the installation of FE side dependencies
+3. This apo uses MongoDB as its Database. Make sure you installed it on your machine. If there is authentication involved, please edit `mongoURI` in the `config/keys.js` file.
+4. Execute `npm run dev`. If this command fails, execute `npm install -g concurrently` and then running the `dev` command.
 
-#### ⚡Front-End Features 
-
-- [1] As a User of the web-app, I can see a list of all the channels
-- [2] As a User of the web-app, I can join a channel and see the history of it
-- [3] As a User of the web-app, I can send messages to a channel after I have joined it
-- [4] As a User of the web-app, I can edit my previous messages
-- [5] As a User of the web-app, I can delete my messages
-- [6] As a User of the web-app, I can search for my previous messages
-- [7] As an AI Bot on the web-app, I can interact with received messages in a channel and reply to
-them
-
+```
