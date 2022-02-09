@@ -3,12 +3,12 @@
 This is full-stack chat app that is built with MERN stack and Material UI. Socket.IO is used for the real-time message broadcasting.
 
 ### Features
--Real-time updates to the user lists, chat list, messages
--Gloabal chat for all users
--Direct messaging between users
--Persist chat history in both global and DM channel.
--Delete & Edit chat
--User authentication features using JWT tokens.
+#### -Real-time updates to the user lists, chat list, messages
+#### -Gloabal chat for all users
+#### -Direct messaging between users
+#### -Persist chat history in both global and DM channel.
+#### -Delete & Edit chat
+#### -User authentication features using JWT tokens.
 
 ### Usage
 
